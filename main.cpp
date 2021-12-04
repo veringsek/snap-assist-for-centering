@@ -32,9 +32,6 @@ void CALLBACK WinEventProc(HWINEVENTHOOK hook, DWORD event, HWND hwnd, LONG idOb
         int dy = cursor.y - center.y;
         if ((-100 <= dx && dx <= 100) && (-100 <= dy && dy <= 100))
         {
-            POINT start;
-            start.x = windowTarget.left;
-            start.y = windowTarget.top;
             int width = windowTarget.right - windowTarget.left;
             int height = windowTarget.bottom - windowTarget.top;
             POINT end;
