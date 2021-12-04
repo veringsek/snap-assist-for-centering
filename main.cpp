@@ -9,8 +9,8 @@
 using namespace std;
 
 // Constants
-int SENSOR_WIDTH = 100;
-int SENSOR_HEIGHT = 100;
+int SENSOR_WIDTH = 50;
+int SENSOR_HEIGHT = 50;
 
 // Globals
 HWINEVENTHOOK hook;
@@ -39,13 +39,20 @@ void CALLBACK WinEventProc(HWINEVENTHOOK hook, DWORD event, HWND hwnd, LONG idOb
         POINT end;
         end.x = center.x - width / 2;
         end.y = center.y - height / 2;
-        SetWindowPos(hwndAssist, HWND_NOTOPMOST, end.x, end.y, width, height, SWP_NOACTIVATE);
+        SetWindowPos(hwndAssist, HWND_TOPMOST, end.x, end.y, width, height, SWP_NOACTIVATE);
         // SetWindowPos(hwndAssist, HWND_NOTOPMOST, center.x - SENSOR_WIDTH / 2, center.y - SENSOR_HEIGHT / 2, SENSOR_WIDTH, SENSOR_HEIGHT, SWP_NOACTIVATE);
         ShowWindow(hwndAssist, SW_SHOWNOACTIVATE);
+
+        HDC hdc;
+        hdc = GetDC(hwndAssist);
+        RECT sensor;
+        SetRect(&sensor, width / 2 - SENSOR_WIDTH, height / 2 - SENSOR_HEIGHT, width / 2 + SENSOR_WIDTH, height / 2 + SENSOR_HEIGHT);
+        FillRect(hdc, &sensor, (HBRUSH)GetStockObject(BLACK_BRUSH));
+        ReleaseDC(hwndAssist, hdc);
     }
     else if (event == EVENT_SYSTEM_MOVESIZEEND)
     {
-        // ShowWindow(hwndAssist, SW_HIDE);
+        ShowWindow(hwndAssist, SW_HIDE);
         POINT cursor;
         GetCursorPos(&cursor);
         RECT workarea;
@@ -82,7 +89,7 @@ int main()
     Hook();
 
     WNDCLASS windowClass = {0};
-    windowClass.hbrBackground = (HBRUSH)GetStockObject(GRAY_BRUSH);
+    windowClass.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
     windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
     windowClass.hInstance = NULL;
     windowClass.lpfnWndProc = WndProc;
@@ -127,6 +134,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
         // cout << cursor.x << ", " << cursor.y << endl;
         MessageBox(NULL, TEXT("CCC"), TEXT("Error"), MB_OK);
         break;
+    // case WM_PAINT:
+        // RECT secondbackground;
+        // RECT titlebox;
+        // HDC hdc;
+        // hdc = GetDC(hwnd);
+        // SetRect(&secondbackground, 3, 3, 297, 495);
+        // FillRect(hdc, &secondbackground, (HBRUSH)GetStockObject(BLACK_BRUSH));
+        // SetRect(&titlebox, 20, 20, 278, 45);
+        // FillRect(hdc, &titlebox, (HBRUSH)GetStockObject(WHITE_BRUSH));
+        // ReleaseDC(hwnd, hdc);
+        // break;
     default:
         return DefWindowProc(hwnd, message, wparam, lparam);
     }
