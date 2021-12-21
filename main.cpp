@@ -40,7 +40,6 @@ void CALLBACK WinEventProc(HWINEVENTHOOK hook, DWORD event, HWND hwnd, LONG idOb
         end.x = center.x - width / 2;
         end.y = center.y - height / 2;
         SetWindowPos(hwndAssist, HWND_TOPMOST, end.x, end.y, width, height, SWP_NOACTIVATE);
-        // SetWindowPos(hwndAssist, HWND_NOTOPMOST, center.x - SENSOR_WIDTH / 2, center.y - SENSOR_HEIGHT / 2, SENSOR_WIDTH, SENSOR_HEIGHT, SWP_NOACTIVATE);
         ShowWindow(hwndAssist, SW_SHOWNOACTIVATE);
 
         HDC hdc;
@@ -69,7 +68,14 @@ void CALLBACK WinEventProc(HWINEVENTHOOK hook, DWORD event, HWND hwnd, LONG idOb
             POINT end;
             end.x = center.x - width / 2;
             end.y = center.y - height / 2;
-            SetWindowPos(hwnd, NULL, end.x, end.y, width, height, SWP_SHOWWINDOW | SWP_NOSIZE);
+            WINDOWPLACEMENT placement;
+            GetWindowPlacement(hwnd, &placement);
+            placement.rcNormalPosition.left = end.x;
+            placement.rcNormalPosition.right = end.x + width;
+            placement.rcNormalPosition.top = end.y;
+            placement.rcNormalPosition.bottom = end.y + height;
+            placement.showCmd = SW_SHOW;
+            SetWindowPlacement(hwnd, &placement);
         }
     }
 }
@@ -93,14 +99,14 @@ int main()
     windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);
     windowClass.hInstance = NULL;
     windowClass.lpfnWndProc = WndProc;
-    windowClass.lpszClassName = TEXT("Window in Console");
+    windowClass.lpszClassName = TEXT("SnapAssistForCentering");
     windowClass.style = CS_HREDRAW | CS_VREDRAW;
     if (!RegisterClass(&windowClass))
     {
         MessageBox(NULL, TEXT("Could not register class"), TEXT("Error"), MB_OK);
     }
     hwndAssist = CreateWindow(
-        TEXT("Window in Console"),
+        TEXT("SnapAssistForCentering"),
         NULL,
         WS_POPUP,
         0, 0,
@@ -131,20 +137,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam)
     case WM_MOUSEMOVE:
         POINT cursor;
         GetCursorPos(&cursor);
-        // cout << cursor.x << ", " << cursor.y << endl;
-        MessageBox(NULL, TEXT("CCC"), TEXT("Error"), MB_OK);
         break;
-    // case WM_PAINT:
-        // RECT secondbackground;
-        // RECT titlebox;
-        // HDC hdc;
-        // hdc = GetDC(hwnd);
-        // SetRect(&secondbackground, 3, 3, 297, 495);
-        // FillRect(hdc, &secondbackground, (HBRUSH)GetStockObject(BLACK_BRUSH));
-        // SetRect(&titlebox, 20, 20, 278, 45);
-        // FillRect(hdc, &titlebox, (HBRUSH)GetStockObject(WHITE_BRUSH));
-        // ReleaseDC(hwnd, hdc);
-        // break;
     default:
         return DefWindowProc(hwnd, message, wparam, lparam);
     }
