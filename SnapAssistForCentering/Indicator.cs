@@ -30,34 +30,6 @@ namespace SnapAssistForCentering
 
         protected override bool ShowWithoutActivation => true;
 
-        private void tmrCursor_Tick(object sender, EventArgs e)
-        {
-            if (hwndDragging == IntPtr.Zero) return;
-
-            Screen? screen = CursorScreen();
-            if (screen == null) return;
-
-            Rectangle rect = new();
-            GetWindowRectangle(hwndDragging, out rect);
-
-            Rectangle sensor = Centering(screen.Bounds, new Size(SENSOR_WIDTH, SENSOR_HEIGHT));
-
-            //Rectangle sensor = new Rectangle(-SENSOR_WIDTH / 2, -SENSOR_HEIGHT / 2, SENSOR_WIDTH, SENSOR_HEIGHT);
-            //sensor.Offset(new Point(screen.Bounds.Width / 2, screen.Bounds.Height / 2));
-            //sensor.Offset(new Point(screen.Bounds.X, screen.Bounds.Y));
-
-            if (sensor.Contains(Cursor.Position))
-            {
-                Size = new Size(rect.Right - rect.Left, rect.Bottom - rect.Top);
-            }
-            else
-            {
-                Size = new Size(100, 100);
-            }
-            Location = LeftTop(Centering(screen.Bounds, Size));
-            //Location = new Point(screen.Bounds.Width / 2, screen.Bounds.Height / 2) - Size / 2;
-        }
-
         private static Screen? CursorScreen()
         {
             foreach (Screen screen in Screen.AllScreens)
@@ -98,6 +70,28 @@ namespace SnapAssistForCentering
         WinEventDelegate procDelegate;
         IntPtr hwndDragging;
 
+        private void tmrCursor_Tick(object sender, EventArgs e)
+        {
+            if (hwndDragging == IntPtr.Zero) return;
+
+            Screen? screen = CursorScreen();
+            if (screen == null) return;
+
+            Rectangle rect = new();
+            GetWindowRectangle(hwndDragging, out rect);
+
+            Rectangle sensor = Centering(screen.Bounds, new Size(SENSOR_WIDTH, SENSOR_HEIGHT));
+            if (sensor.Contains(Cursor.Position))
+            {
+                Size = new Size(rect.Right - rect.Left, rect.Bottom - rect.Top);
+            }
+            else
+            {
+                Size = new Size(100, 100);
+            }
+            Location = LeftTop(Centering(screen.Bounds, Size));
+        }
+
         void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
             if (eventType == EVENT_SYSTEM_MOVESIZESTART)
@@ -110,8 +104,6 @@ namespace SnapAssistForCentering
 
                 IntPtr hwndIndicator = Process.GetCurrentProcess().Handle;
                 Location = LeftTop(Centering(screen.Bounds, new Size(SENSOR_WIDTH, SENSOR_HEIGHT)));
-                //Size = new Size(100, 100);
-                //Location = new Point(Screen.PrimaryScreen.Bounds.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2) - Size / 2;
                 Show();
                 SetWindowPos(hwndIndicator, hwndDragging, Location.X, Location.Y, Size.Width, Size.Height, SW_SHOW);
             }
@@ -124,8 +116,6 @@ namespace SnapAssistForCentering
                 if (screen == null) return;
 
                 Rectangle sensor = Centering(screen.Bounds, new Size(SENSOR_WIDTH, SENSOR_HEIGHT));
-                //Rectangle sensor = new Rectangle(-SENSOR_WIDTH / 2, -SENSOR_HEIGHT / 2, SENSOR_WIDTH, SENSOR_HEIGHT);
-                //sensor.Offset(new Point(Screen.PrimaryScreen.Bounds.Width / 2, Screen.PrimaryScreen.Bounds.Height / 2));
 
                 if (sensor.Contains(Cursor.Position))
                 {
@@ -133,8 +123,6 @@ namespace SnapAssistForCentering
                     GetWindowRectangle(hwndDragging, out rect);
                     Rectangle destination = Centering(screen.Bounds, RectangleSize(rect));
                     SetWindowPos(hwndDragging, IntPtr.Zero, destination.X, destination.Y, destination.Width, destination.Height, SW_SHOW);
-                    //Point destination = new Point((Screen.PrimaryScreen.Bounds.Width - rect.Width) / 2, (Screen.PrimaryScreen.Bounds.Height - rect.Height) / 2);
-                    //SetWindowPos(hwndDragging, IntPtr.Zero, destination.X, destination.Y, rect.Width, rect.Height, SW_SHOW);
                 }
 
                 hwndDragging = IntPtr.Zero;
