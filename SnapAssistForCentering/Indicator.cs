@@ -129,6 +129,16 @@ namespace SnapAssistForCentering
             }
         }
 
+        class SizeControler
+        {
+            public Form form;
+
+            public SizeControler(Form form)
+            {
+                this.form = form;
+            }
+        }
+
         delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
         [DllImport("user32.dll")]
@@ -220,6 +230,7 @@ namespace SnapAssistForCentering
                 CreateParams cParms = base.CreateParams;
                 cParms.Style |= Acrylic.WS_SYSMENU;
                 cParms.ExStyle |= Acrylic.WS_EX_LAYERED;
+                cParms.ExStyle |= 0x00000008; // WS_EX_TOPMOST = 0x00000008
                 return cParms;
             }
         }

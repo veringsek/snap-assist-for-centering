@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.tmrCursor = new System.Windows.Forms.Timer(this.components);
+            this.tmrSizeControler = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // tmrCursor
@@ -47,6 +48,7 @@
             this.Name = "Indicator";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Indicator";
             this.Load += new System.EventHandler(this.Indicator_Load);
@@ -58,5 +60,6 @@
         #endregion
 
         private System.Windows.Forms.Timer tmrCursor;
+        private System.Windows.Forms.Timer tmrSizeControler;
     }
 }
