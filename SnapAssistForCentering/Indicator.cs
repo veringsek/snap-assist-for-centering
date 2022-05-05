@@ -80,7 +80,7 @@ namespace SnapAssistForCentering
             Rectangle rect = new();
             GetWindowRectangle(hwndDragging, out rect);
 
-            Rectangle sensor = Centering(screen.Bounds, new Size(SENSOR_WIDTH, SENSOR_HEIGHT));
+            Rectangle sensor = Centering(screen.WorkingArea, new Size(SENSOR_WIDTH, SENSOR_HEIGHT));
             if (sensor.Contains(Cursor.Position))
             {
                 Size = new Size(rect.Right - rect.Left, rect.Bottom - rect.Top);
@@ -89,7 +89,7 @@ namespace SnapAssistForCentering
             {
                 Size = new Size(100, 100);
             }
-            Location = LeftTop(Centering(screen.Bounds, Size));
+            Location = LeftTop(Centering(screen.WorkingArea, Size));
         }
 
         void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
@@ -103,7 +103,7 @@ namespace SnapAssistForCentering
                 if (screen == null) return;
 
                 IntPtr hwndIndicator = Process.GetCurrentProcess().Handle;
-                Location = LeftTop(Centering(screen.Bounds, new Size(SENSOR_WIDTH, SENSOR_HEIGHT)));
+                Location = LeftTop(Centering(screen.WorkingArea, new Size(SENSOR_WIDTH, SENSOR_HEIGHT)));
                 Show();
                 SetWindowPos(hwndIndicator, hwndDragging, Location.X, Location.Y, Size.Width, Size.Height, SW_SHOW);
             }
@@ -115,13 +115,13 @@ namespace SnapAssistForCentering
                 Screen? screen = CursorScreen();
                 if (screen == null) return;
 
-                Rectangle sensor = Centering(screen.Bounds, new Size(SENSOR_WIDTH, SENSOR_HEIGHT));
+                Rectangle sensor = Centering(screen.WorkingArea, new Size(SENSOR_WIDTH, SENSOR_HEIGHT));
 
                 if (sensor.Contains(Cursor.Position))
                 {
                     Rectangle rect = new();
                     GetWindowRectangle(hwndDragging, out rect);
-                    Rectangle destination = Centering(screen.Bounds, RectangleSize(rect));
+                    Rectangle destination = Centering(screen.WorkingArea, RectangleSize(rect));
                     SetWindowPos(hwndDragging, IntPtr.Zero, destination.X, destination.Y, destination.Width, destination.Height, SW_SHOW);
                 }
 
