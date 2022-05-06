@@ -122,7 +122,7 @@ namespace SnapAssistForCentering
                     Rectangle rect = new();
                     GetWindowRectangle(hwndDragging, out rect);
                     Rectangle destination = Centering(screen.WorkingArea, RectangleSize(rect));
-                    SetWindowPos(hwndDragging, IntPtr.Zero, destination.X, destination.Y, destination.Width, destination.Height, SW_SHOW);
+                    SetWindowPosition(hwndDragging, destination, SW_SHOW);
                 }
 
                 hwndDragging = IntPtr.Zero;
@@ -197,6 +197,22 @@ namespace SnapAssistForCentering
 
         [DllImport("user32.dll")]
         static extern bool SetWindowPos(IntPtr hWnd, IntPtr hwndInsertAfter, int x, int y, int cx, int cy, uint flags);
+        static private bool SetWindowPosition(IntPtr hwnd, Rectangle location, uint flags, IntPtr? hwndInsertAfter = null)
+        {
+            if (hwndInsertAfter == null)
+            {
+                hwndInsertAfter = IntPtr.Zero;
+            }
+            return SetWindowPos(hwnd, (IntPtr)hwndInsertAfter, location.X, location.Y, location.Width, location.Height, flags);
+        }
+        static private bool SetWindowPosition(IntPtr hwnd, Point location, Size size, uint flags, IntPtr? hwndInsertAfter = null)
+        {
+            if (hwndInsertAfter == null)
+            {
+                hwndInsertAfter = IntPtr.Zero;
+            }
+            return SetWindowPos(hwnd, (IntPtr)hwndInsertAfter, location.X, location.Y, size.Width, size.Height, flags);
+        }
 
         public static class Acrylic
         {
