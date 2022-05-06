@@ -145,7 +145,7 @@ namespace SnapAssistForCentering
             {
                 this.form = form;
                 timer = new System.Windows.Forms.Timer();
-                timer.Tick += new System.EventHandler(timer_Tick);
+                timer.Tick += new System.EventHandler(Animate);
                 timer.Interval = 10;
                 target = form.Size;
                 delta = new Size();
@@ -161,7 +161,7 @@ namespace SnapAssistForCentering
                 timer.Start();
             }
 
-            private void timer_Tick(object sender, EventArgs e)
+            private void Animate(object sender, EventArgs e)
             {
                 form.Size = form.Size + delta;
                 form.Location = LeftTop(Centering(area, form.Size));
