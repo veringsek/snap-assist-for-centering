@@ -12,6 +12,7 @@ namespace SnapAssistForCentering
             hwndDragging = IntPtr.Zero;
             procDelegate = new WinEventDelegate(WinEventProc);
             IntPtr hook = SetWinEventHook(EVENT_SYSTEM_MOVESIZESTART, EVENT_SYSTEM_MOVESIZEEND, IntPtr.Zero, procDelegate, 0, 0, WINEVENT_OUTOFCONTEXT);
+            controller = new SizeController(this);
         }
 
         private void Indicator_Load(object sender, EventArgs e)
@@ -24,6 +25,7 @@ namespace SnapAssistForCentering
             if (startup)
             {
                 startup = false;
+                controller.To(Screen.PrimaryScreen.WorkingArea, new Size(SENSOR_WIDTH, SENSOR_HEIGHT), SIZE_ANIMATION_TIME);
                 Hide();
             }
         }
@@ -42,11 +44,11 @@ namespace SnapAssistForCentering
             return null;
         }
 
-        private static Rectangle Centering(Rectangle bounds, Size size)
+        private static Rectangle Centering(Rectangle area, Size size)
         {
             return new Rectangle(
-                bounds.X + bounds.Width / 2 - size.Width / 2,
-                bounds.Y + bounds.Height / 2 - size.Height / 2,
+                area.X + area.Width / 2 - size.Width / 2,
+                area.Y + area.Height / 2 - size.Height / 2,
                 size.Width, size.Height);
         }
 
@@ -69,6 +71,7 @@ namespace SnapAssistForCentering
         const int SENSOR_HEIGHT = 100;
         WinEventDelegate procDelegate;
         IntPtr hwndDragging;
+        const int SIZE_ANIMATION_TIME = 100;
 
         private void tmrCursor_Tick(object sender, EventArgs e)
         {
@@ -83,13 +86,12 @@ namespace SnapAssistForCentering
             Rectangle sensor = Centering(screen.WorkingArea, new Size(SENSOR_WIDTH, SENSOR_HEIGHT));
             if (sensor.Contains(Cursor.Position))
             {
-                Size = new Size(rect.Right - rect.Left, rect.Bottom - rect.Top);
+                controller.To(screen.WorkingArea, new Size(rect.Width, rect.Height), SIZE_ANIMATION_TIME);
             }
             else
             {
-                Size = new Size(100, 100);
+                controller.To(screen.WorkingArea, new Size(100, 100), SIZE_ANIMATION_TIME);
             }
-            Location = LeftTop(Centering(screen.WorkingArea, Size));
         }
 
         void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
@@ -102,10 +104,8 @@ namespace SnapAssistForCentering
                 Screen? screen = CursorScreen();
                 if (screen == null) return;
 
-                IntPtr hwndIndicator = Process.GetCurrentProcess().Handle;
-                Location = LeftTop(Centering(screen.WorkingArea, new Size(SENSOR_WIDTH, SENSOR_HEIGHT)));
+                controller.To(screen.WorkingArea, new Size(SENSOR_WIDTH, SENSOR_HEIGHT), SIZE_ANIMATION_TIME);
                 Show();
-                SetWindowPos(hwndIndicator, hwndDragging, Location.X, Location.Y, Size.Width, Size.Height, SW_SHOW);
             }
             else if (eventType == EVENT_SYSTEM_MOVESIZEEND)
             {
@@ -129,13 +129,49 @@ namespace SnapAssistForCentering
             }
         }
 
-        class SizeControler
+        private SizeController controller;
+
+        class SizeController
         {
             public Form form;
+            public System.Windows.Forms.Timer timer;
 
-            public SizeControler(Form form)
+            private Rectangle area;
+            private Size target;
+            private Size delta;
+            private int countdown;
+
+            public SizeController(Form form)
             {
                 this.form = form;
+                timer = new System.Windows.Forms.Timer();
+                timer.Tick += new System.EventHandler(timer_Tick);
+                timer.Interval = 10;
+                target = form.Size;
+                delta = new Size();
+                area = new Rectangle();
+            }
+
+            public void To(Rectangle area, Size size, int milliseconds)
+            {
+                this.area = area;
+                delta = (size - form.Size) * timer.Interval / milliseconds;
+                target = size;
+                countdown = milliseconds;
+                timer.Start();
+            }
+
+            private void timer_Tick(object sender, EventArgs e)
+            {
+                form.Size = form.Size + delta;
+                form.Location = LeftTop(Centering(area, form.Size));
+                countdown -= 1;
+                if (countdown <= 0)
+                {
+                    form.Size = target;
+                    countdown = 0;
+                    timer.Stop();
+                }
             }
         }
 
