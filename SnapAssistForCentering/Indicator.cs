@@ -25,7 +25,7 @@ namespace SnapAssistForCentering
             if (startup)
             {
                 startup = false;
-                controller.To(Screen.PrimaryScreen.WorkingArea, new Size(SENSOR_WIDTH, SENSOR_HEIGHT), SIZE_ANIMATION_TIME);
+                controller.To(Screen.PrimaryScreen.WorkingArea, SensorSize(), SIZE_ANIMATION_TIME);
                 Hide();
             }
         }
@@ -73,6 +73,11 @@ namespace SnapAssistForCentering
         IntPtr hwndDragging;
         const int SIZE_ANIMATION_TIME = 100;
 
+        private static Size SensorSize()
+        {
+            return new Size(SENSOR_WIDTH, SENSOR_HEIGHT);
+        }
+
         private void tmrCursor_Tick(object sender, EventArgs e)
         {
             if (hwndDragging == IntPtr.Zero) return;
@@ -80,10 +85,8 @@ namespace SnapAssistForCentering
             Screen? screen = CursorScreen();
             if (screen == null) return;
 
-            Rectangle rect = new();
-            GetWindowRectangle(hwndDragging, out rect);
-
-            Rectangle sensor = Centering(screen.WorkingArea, new Size(SENSOR_WIDTH, SENSOR_HEIGHT));
+            Rectangle rect = GetWindowRectangle(hwndDragging);
+            Rectangle sensor = Centering(screen.WorkingArea, SensorSize());
             if (sensor.Contains(Cursor.Position))
             {
                 controller.To(screen.WorkingArea, new Size(rect.Width, rect.Height), SIZE_ANIMATION_TIME);
@@ -104,7 +107,7 @@ namespace SnapAssistForCentering
                 Screen? screen = CursorScreen();
                 if (screen == null) return;
 
-                controller.To(screen.WorkingArea, new Size(SENSOR_WIDTH, SENSOR_HEIGHT), SIZE_ANIMATION_TIME);
+                controller.To(screen.WorkingArea, SensorSize(), SIZE_ANIMATION_TIME);
                 Show();
             }
             else if (eventType == EVENT_SYSTEM_MOVESIZEEND)
@@ -115,12 +118,11 @@ namespace SnapAssistForCentering
                 Screen? screen = CursorScreen();
                 if (screen == null) return;
 
-                Rectangle sensor = Centering(screen.WorkingArea, new Size(SENSOR_WIDTH, SENSOR_HEIGHT));
+                Rectangle sensor = Centering(screen.WorkingArea, SensorSize());
 
                 if (sensor.Contains(Cursor.Position))
                 {
-                    Rectangle rect = new();
-                    GetWindowRectangle(hwndDragging, out rect);
+                    Rectangle rect = GetWindowRectangle(hwndDragging);
                     Rectangle destination = Centering(screen.WorkingArea, RectangleSize(rect));
                     SetWindowPosition(hwndDragging, destination, SW_SHOW);
                 }
@@ -129,7 +131,7 @@ namespace SnapAssistForCentering
             }
         }
 
-        private SizeController controller;
+        private readonly SizeController controller;
 
         class SizeController
         {
@@ -161,9 +163,10 @@ namespace SnapAssistForCentering
                 timer.Start();
             }
 
-            private void Animate(object sender, EventArgs e)
+            private void Animate(object? sender, EventArgs e)
             {
-                form.Size = form.Size + delta;
+                Console.WriteLine(delta);
+                form.Size += delta;
                 form.Location = LeftTop(Centering(area, form.Size));
                 countdown -= 1;
                 if (countdown <= 0)
@@ -186,13 +189,14 @@ namespace SnapAssistForCentering
 
         [DllImport("user32.dll")]
         static extern int GetWindowRect(IntPtr hWnd, out Rectangle rect);
-        static int GetWindowRectangle(IntPtr hwnd, out Rectangle rect)
+        static Rectangle GetWindowRectangle(IntPtr hwnd)
         {
-            int returned = GetWindowRect(hwnd, out rect);
+            Rectangle rectangle = new();
+            GetWindowRect(hwnd, out rectangle);
             // The returned Width and Height are actually Right and Bottom
-            rect.Width = rect.Width - rect.Left;
-            rect.Height = rect.Height - rect.Top;
-            return returned;
+            rectangle.Width = rectangle.Width - rectangle.Left;
+            rectangle.Height = rectangle.Height - rectangle.Top;
+            return rectangle;
         }
 
         [DllImport("user32.dll")]
