@@ -290,5 +290,10 @@ namespace SnapAssistForCentering
                 return cParms;
             }
         }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }

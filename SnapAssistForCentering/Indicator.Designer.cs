@@ -29,13 +29,48 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Indicator));
             this.tmrCursor = new System.Windows.Forms.Timer(this.components);
-            this.tmrSizeControler = new System.Windows.Forms.Timer(this.components);
+            this.SystemTrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.mnuSystemTrayIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.runAtStartupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuSystemTrayIcon.SuspendLayout();
             this.SuspendLayout();
             // 
             // tmrCursor
             // 
             this.tmrCursor.Tick += new System.EventHandler(this.tmrCursor_Tick);
+            // 
+            // SystemTrayIcon
+            // 
+            this.SystemTrayIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.SystemTrayIcon.ContextMenuStrip = this.mnuSystemTrayIcon;
+            this.SystemTrayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("SystemTrayIcon.Icon")));
+            this.SystemTrayIcon.Visible = true;
+            // 
+            // mnuSystemTrayIcon
+            // 
+            this.mnuSystemTrayIcon.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.runAtStartupToolStripMenuItem,
+            this.exitToolStripMenuItem});
+            this.mnuSystemTrayIcon.Name = "mnuSystemTrayIcon";
+            this.mnuSystemTrayIcon.Size = new System.Drawing.Size(181, 70);
+            // 
+            // runAtStartupToolStripMenuItem
+            // 
+            this.runAtStartupToolStripMenuItem.Checked = true;
+            this.runAtStartupToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.runAtStartupToolStripMenuItem.Name = "runAtStartupToolStripMenuItem";
+            this.runAtStartupToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.runAtStartupToolStripMenuItem.Text = "Run at Start-up";
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // Indicator
             // 
@@ -53,6 +88,7 @@
             this.Text = "Indicator";
             this.Load += new System.EventHandler(this.Indicator_Load);
             this.Shown += new System.EventHandler(this.Indicator_Shown);
+            this.mnuSystemTrayIcon.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -60,6 +96,9 @@
         #endregion
 
         private System.Windows.Forms.Timer tmrCursor;
-        private System.Windows.Forms.Timer tmrSizeControler;
+        private System.Windows.Forms.NotifyIcon SystemTrayIcon;
+        private ContextMenuStrip mnuSystemTrayIcon;
+        private ToolStripMenuItem runAtStartupToolStripMenuItem;
+        private ToolStripMenuItem exitToolStripMenuItem;
     }
 }
