@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Microsoft.Win32;
 
 namespace SnapAssistForCentering
 {
@@ -63,6 +64,7 @@ namespace SnapAssistForCentering
         }
 
         bool startup = true;
+        const String APP_NAME = "Snap Assist For Centering";
         const uint WINEVENT_OUTOFCONTEXT = 0;
         const uint EVENT_SYSTEM_MOVESIZESTART = 0x000A;
         const uint EVENT_SYSTEM_MOVESIZEEND = 0x000B;
@@ -294,6 +296,22 @@ namespace SnapAssistForCentering
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void runAtStartupToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RegistryKey? key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            if (key == null) return;
+            if (runAtStartupToolStripMenuItem.Checked)
+            {
+                key.DeleteValue(Application.ProductName, false);
+                runAtStartupToolStripMenuItem.Checked = false;
+            }
+            else
+            {
+                key.SetValue(Application.ProductName, Application.ExecutablePath);
+                runAtStartupToolStripMenuItem.Checked = true;
+            }
         }
     }
 }

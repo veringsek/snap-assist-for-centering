@@ -59,11 +59,10 @@
             // 
             // runAtStartupToolStripMenuItem
             // 
-            this.runAtStartupToolStripMenuItem.Checked = true;
-            this.runAtStartupToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.runAtStartupToolStripMenuItem.Name = "runAtStartupToolStripMenuItem";
             this.runAtStartupToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.runAtStartupToolStripMenuItem.Text = "Run at Start-up";
+            this.runAtStartupToolStripMenuItem.Text = "Run at Startup";
+            this.runAtStartupToolStripMenuItem.Click += new System.EventHandler(this.runAtStartupToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
