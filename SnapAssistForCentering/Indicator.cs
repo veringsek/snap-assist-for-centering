@@ -14,9 +14,7 @@ namespace SnapAssistForCentering
             procDelegate = new WinEventDelegate(WinEventProc);
             IntPtr hook = SetWinEventHook(EVENT_SYSTEM_MOVESIZESTART, EVENT_SYSTEM_MOVESIZEEND, IntPtr.Zero, procDelegate, 0, 0, WINEVENT_OUTOFCONTEXT);
             controller = new SizeController(this);
-
-            RegistryKey? key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            chkRunAtStartup.Checked = key != null;
+            chkRunAtStartup_GetState();
         }
 
         private void Indicator_Load(object sender, EventArgs e)
@@ -24,7 +22,7 @@ namespace SnapAssistForCentering
             Acrylic.Enable(Handle);
         }
 
-        private void Indicator_Shown(object sender, EventArgs e)
+        private void Indicator_Shown(object? sender, EventArgs e)
         {
             Shown -= Indicator_Shown;
             controller.To(Screen.PrimaryScreen.WorkingArea, SensorSize(), SIZE_ANIMATION_TIME);
@@ -32,6 +30,33 @@ namespace SnapAssistForCentering
         }
 
         protected override bool ShowWithoutActivation => true;
+
+        private void chkRunAtStartup_GetState()
+        {
+            RegistryKey? key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            if (key == null)
+            {
+                chkRunAtStartup.Enabled = false;
+                chkRunAtStartup.Checked = false;
+            }
+            else
+            {
+                chkRunAtStartup.Enabled = true;
+                var value = key.GetValue(Application.ProductName);
+                if (value == null)
+                {
+                    chkRunAtStartup.Checked = false;
+                }
+                else if (value.ToString() == Application.ExecutablePath)
+                {
+                    chkRunAtStartup.Checked = true;
+                }
+                else
+                {
+                    chkRunAtStartup.Checked = false;
+                }
+            }
+        }
 
         private static Screen? CursorScreen()
         {
