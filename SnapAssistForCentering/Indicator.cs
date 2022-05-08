@@ -14,6 +14,9 @@ namespace SnapAssistForCentering
             procDelegate = new WinEventDelegate(WinEventProc);
             IntPtr hook = SetWinEventHook(EVENT_SYSTEM_MOVESIZESTART, EVENT_SYSTEM_MOVESIZEEND, IntPtr.Zero, procDelegate, 0, 0, WINEVENT_OUTOFCONTEXT);
             controller = new SizeController(this);
+
+            RegistryKey? key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            chkRunAtStartup.Checked = key != null;
         }
 
         private void Indicator_Load(object sender, EventArgs e)
@@ -23,12 +26,9 @@ namespace SnapAssistForCentering
 
         private void Indicator_Shown(object sender, EventArgs e)
         {
-            if (startup)
-            {
-                startup = false;
-                controller.To(Screen.PrimaryScreen.WorkingArea, SensorSize(), SIZE_ANIMATION_TIME);
-                Hide();
-            }
+            Shown -= Indicator_Shown;
+            controller.To(Screen.PrimaryScreen.WorkingArea, SensorSize(), SIZE_ANIMATION_TIME);
+            Hide();
         }
 
         protected override bool ShowWithoutActivation => true;
@@ -63,40 +63,22 @@ namespace SnapAssistForCentering
             return new Size(rectangle.Width, rectangle.Height);
         }
 
-        bool startup = true;
-        const String APP_NAME = "Snap Assist For Centering";
+        readonly WinEventDelegate procDelegate;
+        private IntPtr hwndDragging;
+
         const uint WINEVENT_OUTOFCONTEXT = 0;
         const uint EVENT_SYSTEM_MOVESIZESTART = 0x000A;
         const uint EVENT_SYSTEM_MOVESIZEEND = 0x000B;
         const int SW_SHOW = 5;
         const int SENSOR_WIDTH = 100;
         const int SENSOR_HEIGHT = 100;
-        WinEventDelegate procDelegate;
-        IntPtr hwndDragging;
         const int SIZE_ANIMATION_TIME = 100;
+
+        private readonly SizeController controller;
 
         private static Size SensorSize()
         {
             return new Size(SENSOR_WIDTH, SENSOR_HEIGHT);
-        }
-
-        private void tmrCursor_Tick(object sender, EventArgs e)
-        {
-            if (hwndDragging == IntPtr.Zero) return;
-
-            Screen? screen = CursorScreen();
-            if (screen == null) return;
-
-            Rectangle rect = GetWindowRectangle(hwndDragging);
-            Rectangle sensor = Centering(screen.WorkingArea, SensorSize());
-            if (sensor.Contains(Cursor.Position))
-            {
-                controller.To(screen.WorkingArea, new Size(rect.Width, rect.Height), SIZE_ANIMATION_TIME);
-            }
-            else
-            {
-                controller.To(screen.WorkingArea, new Size(100, 100), SIZE_ANIMATION_TIME);
-            }
         }
 
         void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
@@ -132,8 +114,6 @@ namespace SnapAssistForCentering
                 hwndDragging = IntPtr.Zero;
             }
         }
-
-        private readonly SizeController controller;
 
         class SizeController
         {
@@ -293,24 +273,43 @@ namespace SnapAssistForCentering
             }
         }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        private void tmrCursor_Tick(object sender, EventArgs e)
+        {
+            if (hwndDragging == IntPtr.Zero) return;
+
+            Screen? screen = CursorScreen();
+            if (screen == null) return;
+
+            Rectangle rect = GetWindowRectangle(hwndDragging);
+            Rectangle sensor = Centering(screen.WorkingArea, SensorSize());
+            if (sensor.Contains(Cursor.Position))
+            {
+                controller.To(screen.WorkingArea, new Size(rect.Width, rect.Height), SIZE_ANIMATION_TIME);
+            }
+            else
+            {
+                controller.To(screen.WorkingArea, new Size(100, 100), SIZE_ANIMATION_TIME);
+            }
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
-        private void runAtStartupToolStripMenuItem_Click(object sender, EventArgs e)
+        private void chkRunAtStartup_Click(object sender, EventArgs e)
         {
             RegistryKey? key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
             if (key == null) return;
-            if (runAtStartupToolStripMenuItem.Checked)
+            if (chkRunAtStartup.Checked)
             {
                 key.DeleteValue(Application.ProductName, false);
-                runAtStartupToolStripMenuItem.Checked = false;
+                chkRunAtStartup.Checked = false;
             }
             else
             {
                 key.SetValue(Application.ProductName, Application.ExecutablePath);
-                runAtStartupToolStripMenuItem.Checked = true;
+                chkRunAtStartup.Checked = true;
             }
         }
     }

@@ -33,8 +33,8 @@
             this.tmrCursor = new System.Windows.Forms.Timer(this.components);
             this.SystemTrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.mnuSystemTrayIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.runAtStartupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.chkRunAtStartup = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnExit = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSystemTrayIcon.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -52,24 +52,24 @@
             // mnuSystemTrayIcon
             // 
             this.mnuSystemTrayIcon.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.runAtStartupToolStripMenuItem,
-            this.exitToolStripMenuItem});
+            this.chkRunAtStartup,
+            this.btnExit});
             this.mnuSystemTrayIcon.Name = "mnuSystemTrayIcon";
             this.mnuSystemTrayIcon.Size = new System.Drawing.Size(181, 70);
             // 
-            // runAtStartupToolStripMenuItem
+            // chkRunAtStartup
             // 
-            this.runAtStartupToolStripMenuItem.Name = "runAtStartupToolStripMenuItem";
-            this.runAtStartupToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.runAtStartupToolStripMenuItem.Text = "Run at Startup";
-            this.runAtStartupToolStripMenuItem.Click += new System.EventHandler(this.runAtStartupToolStripMenuItem_Click);
+            this.chkRunAtStartup.Name = "chkRunAtStartup";
+            this.chkRunAtStartup.Size = new System.Drawing.Size(180, 22);
+            this.chkRunAtStartup.Text = "Run at Startup";
+            this.chkRunAtStartup.Click += new System.EventHandler(this.chkRunAtStartup_Click);
             // 
-            // exitToolStripMenuItem
+            // btnExit
             // 
-            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.exitToolStripMenuItem.Text = "Exit";
-            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(180, 22);
+            this.btnExit.Text = "Exit";
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
             // Indicator
             // 
@@ -97,7 +97,7 @@
         private System.Windows.Forms.Timer tmrCursor;
         private System.Windows.Forms.NotifyIcon SystemTrayIcon;
         private ContextMenuStrip mnuSystemTrayIcon;
-        private ToolStripMenuItem runAtStartupToolStripMenuItem;
-        private ToolStripMenuItem exitToolStripMenuItem;
+        private ToolStripMenuItem chkRunAtStartup;
+        private ToolStripMenuItem btnExit;
     }
 }
