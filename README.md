@@ -1,3 +1,5 @@
+<img src="imgs/icon-100x100.png" />
+
 # Snap Assist for Centering
 
 > English [中文](READEME-zh.md)

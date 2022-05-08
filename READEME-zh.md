@@ -1,3 +1,5 @@
+<img src="imgs/icon-100x100.png" />
+
 # Snap Assist for Centering
 
 > [English](README.md) 中文
