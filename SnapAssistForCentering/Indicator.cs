@@ -11,6 +11,7 @@ namespace SnapAssistForCentering
             InitializeComponent();
 
             hwndDragging = IntPtr.Zero;
+            status = Status.IDLE;
             procDelegate = new WinEventDelegate(WinEventProc);
             IntPtr hook = SetWinEventHook(EVENT_SYSTEM_MOVESIZESTART, EVENT_SYSTEM_MOVESIZEEND, IntPtr.Zero, procDelegate, 0, 0, WINEVENT_OUTOFCONTEXT);
             controller = new SizeController(this);
@@ -91,6 +92,14 @@ namespace SnapAssistForCentering
         readonly WinEventDelegate procDelegate;
         private IntPtr hwndDragging;
 
+        private Status status;
+        enum Status
+        {
+            IDLE = 0,
+            NON_ACTIVATED = 1,
+            ACTIVATED = 2
+        }
+
         const uint WINEVENT_OUTOFCONTEXT = 0;
         const uint EVENT_SYSTEM_MOVESIZESTART = 0x000A;
         const uint EVENT_SYSTEM_MOVESIZEEND = 0x000B;
@@ -111,13 +120,13 @@ namespace SnapAssistForCentering
             if (eventType == EVENT_SYSTEM_MOVESIZESTART)
             {
                 hwndDragging = hwnd;
+                status = Status.NON_ACTIVATED;
                 tmrCursor.Start();
 
                 Screen? screen = CursorScreen();
                 if (screen == null) return;
 
                 controller.To(screen.WorkingArea, SensorSize(), SIZE_ANIMATION_TIME);
-                Show();
             }
             else if (eventType == EVENT_SYSTEM_MOVESIZEEND)
             {
@@ -129,7 +138,7 @@ namespace SnapAssistForCentering
 
                 Rectangle sensor = Centering(screen.WorkingArea, SensorSize());
 
-                if (sensor.Contains(Cursor.Position))
+                if (status == Status.ACTIVATED && sensor.Contains(Cursor.Position))
                 {
                     Rectangle rect = GetWindowRectangle(hwndDragging);
                     Rectangle destination = Centering(screen.WorkingArea, RectangleSize(rect));
@@ -137,6 +146,7 @@ namespace SnapAssistForCentering
                 }
 
                 hwndDragging = IntPtr.Zero;
+                status = Status.IDLE;
             }
         }
 
@@ -307,13 +317,22 @@ namespace SnapAssistForCentering
 
             Rectangle rect = GetWindowRectangle(hwndDragging);
             Rectangle sensor = Centering(screen.WorkingArea, SensorSize());
-            if (sensor.Contains(Cursor.Position))
+
+            if (status == Status.NON_ACTIVATED && !sensor.Contains(Cursor.Position))
             {
-                controller.To(screen.WorkingArea, new Size(rect.Width, rect.Height), SIZE_ANIMATION_TIME);
+                status = Status.ACTIVATED;
+                Show();
             }
-            else
+            else if (status == Status.ACTIVATED)
             {
-                controller.To(screen.WorkingArea, new Size(100, 100), SIZE_ANIMATION_TIME);
+                if (sensor.Contains(Cursor.Position))
+                {
+                    controller.To(screen.WorkingArea, new Size(rect.Width, rect.Height), SIZE_ANIMATION_TIME);
+                }
+                else
+                {
+                    controller.To(screen.WorkingArea, new Size(100, 100), SIZE_ANIMATION_TIME);
+                }
             }
         }
 
