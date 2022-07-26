@@ -95,10 +95,12 @@ namespace SnapAssistForCentering
         private Status status;
         enum Status
         {
-            IDLE = 0,
-            NON_ACTIVATED = 1,
-            ACTIVATED = 2
+            IDLE = 0, // Not currently
+            NON_ACTIVATED = 1, // Dragging with cursor never leaving sensor area, Indicator is non-activated and centering is disabled
+            ACTIVATED = 2 // Dragging with cursor once left sensor area, Indicator is activated and centering is enabled
         }
+
+        private bool sensing = false; // If the dragging window is onto activated Indicator
 
         const uint WINEVENT_OUTOFCONTEXT = 0;
         const uint EVENT_SYSTEM_MOVESIZESTART = 0x000A;
@@ -106,12 +108,18 @@ namespace SnapAssistForCentering
         const int SW_SHOW = 5;
         const int SENSOR_WIDTH = 100;
         const int SENSOR_HEIGHT = 100;
+        const int SENSOR_WIDTH_SENSING = 300;
+        const int SENSOR_HEIGHT_SENSING = 300;
         const int SIZE_ANIMATION_TIME = 100;
 
         private readonly SizeController controller;
 
-        private static Size SensorSize()
+        private Size SensorSize()
         {
+            if (sensing)
+            {
+                return new Size(SENSOR_WIDTH_SENSING, SENSOR_HEIGHT_SENSING);
+            }
             return new Size(SENSOR_WIDTH, SENSOR_HEIGHT);
         }
 
@@ -327,10 +335,12 @@ namespace SnapAssistForCentering
             {
                 if (sensor.Contains(Cursor.Position))
                 {
+                    sensing = true;
                     controller.To(screen.WorkingArea, new Size(rect.Width, rect.Height), SIZE_ANIMATION_TIME);
                 }
                 else
                 {
+                    sensing = false;
                     controller.To(screen.WorkingArea, new Size(100, 100), SIZE_ANIMATION_TIME);
                 }
             }
