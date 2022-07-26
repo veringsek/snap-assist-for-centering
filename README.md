@@ -16,6 +16,8 @@ You can exit the program or set to run at startup with the system tray icon.
 
 <img src="imgs/screenshot-system-tray.png" />
 
+If for some reason the indicator window is not at topmost, restart the program with the system tray icon.
+
 ## Dev
 
 Due to the limitation of C++, this program has been remade in C#.

@@ -16,6 +16,8 @@
 
 <img src="imgs/screenshot-system-tray.png" />
 
+如果指示視窗沒有被置頂，請透過系統列的圖示重新啟動程式。
+
 ## 開發
 
 由於C++的諸多限制，此程式已用C#改寫。
