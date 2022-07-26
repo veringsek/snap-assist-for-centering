@@ -35,6 +35,7 @@
             this.mnuSystemTrayIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.chkRunAtStartup = new System.Windows.Forms.ToolStripMenuItem();
             this.btnExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.restartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSystemTrayIcon.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -53,9 +54,10 @@
             // 
             this.mnuSystemTrayIcon.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.chkRunAtStartup,
+            this.restartToolStripMenuItem,
             this.btnExit});
             this.mnuSystemTrayIcon.Name = "mnuSystemTrayIcon";
-            this.mnuSystemTrayIcon.Size = new System.Drawing.Size(181, 70);
+            this.mnuSystemTrayIcon.Size = new System.Drawing.Size(181, 92);
             // 
             // chkRunAtStartup
             // 
@@ -70,6 +72,13 @@
             this.btnExit.Size = new System.Drawing.Size(180, 22);
             this.btnExit.Text = "Exit";
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            // 
+            // restartToolStripMenuItem
+            // 
+            this.restartToolStripMenuItem.Name = "restartToolStripMenuItem";
+            this.restartToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.restartToolStripMenuItem.Text = "Restart";
+            this.restartToolStripMenuItem.Click += new System.EventHandler(this.restartToolStripMenuItem_Click);
             // 
             // Indicator
             // 
@@ -99,5 +108,6 @@
         private ContextMenuStrip mnuSystemTrayIcon;
         private ToolStripMenuItem chkRunAtStartup;
         private ToolStripMenuItem btnExit;
+        private ToolStripMenuItem restartToolStripMenuItem;
     }
 }

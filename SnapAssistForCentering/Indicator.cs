@@ -366,5 +366,11 @@ namespace SnapAssistForCentering
                 chkRunAtStartup.Checked = true;
             }
         }
+
+        private void restartToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Restart();
+            Environment.Exit(0);
+        }
     }
 }
