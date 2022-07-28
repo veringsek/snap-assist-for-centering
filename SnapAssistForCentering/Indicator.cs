@@ -16,6 +16,7 @@ namespace SnapAssistForCentering
             IntPtr hook = SetWinEventHook(EVENT_SYSTEM_MOVESIZESTART, EVENT_SYSTEM_MOVESIZEEND, IntPtr.Zero, procDelegate, 0, 0, WINEVENT_OUTOFCONTEXT);
             controller = new SizeController(this);
             chkRunAtStartup_GetState();
+            GetRestartIntervalState();
         }
 
         private void Indicator_Load(object sender, EventArgs e)
@@ -367,10 +368,87 @@ namespace SnapAssistForCentering
             }
         }
 
-        private void restartToolStripMenuItem_Click(object sender, EventArgs e)
+        private static void Restart()
         {
             Application.Restart();
             Environment.Exit(0);
+        }
+
+        private void btnRestart_Click(object sender, EventArgs e)
+        {
+            Restart();
+        }
+
+        private void btnRestartNow_Click(object sender, EventArgs e)
+        {
+            Restart();
+        }
+
+        private static int? GetRestartInterval()
+        {
+            RegistryKey? key = Registry.CurrentUser.OpenSubKey($"SOFTWARE\\{Application.ProductName}", true);
+            if (key == null) return null;
+            return (int?)key.GetValue("RestartInterval");
+        }
+
+        private void GetRestartIntervalState()
+        {
+            int? interval = GetRestartInterval();
+            chkRestartEvery5Mins.Checked = false;
+            chkRestartEveryHours.Checked = false;
+            if (interval == RESTART_INTERVAL_5MINS)
+            {
+                chkRestartEvery5Mins.Checked = true;
+                tmrRestart.Interval = RESTART_INTERVAL_5MINS;
+                tmrRestart.Start();
+            }
+            else if (interval == RESTART_INTERVAL_HOURS)
+            {
+                chkRestartEveryHours.Checked = true;
+                tmrRestart.Interval = RESTART_INTERVAL_HOURS;
+                tmrRestart.Start();
+            }
+        }
+
+        private static void SetRestartInterval(int interval)
+        {
+            RegistryKey? key = Registry.CurrentUser.OpenSubKey($"SOFTWARE\\{Application.ProductName}", true);
+            if (key == null) key = Registry.CurrentUser.CreateSubKey($"SOFTWARE\\{Application.ProductName}");
+            key.SetValue("RestartInterval", interval);
+        }
+
+        private const int RESTART_INTERVAL_5MINS = 5 * 60 * 1000;
+        private const int RESTART_INTERVAL_HOURS = 60 * 60 * 1000;
+
+        private void chkRestartEvery5Mins_Click(object sender, EventArgs e)
+        {
+            if (chkRestartEvery5Mins.Checked)
+            {
+                SetRestartInterval(-1);
+            }
+            else
+            {
+                SetRestartInterval(RESTART_INTERVAL_5MINS);
+            }
+            GetRestartIntervalState();
+        }
+
+        private void chkRestartEveryHours_Click(object sender, EventArgs e)
+        {
+            if (chkRestartEveryHours.Checked)
+            {
+                SetRestartInterval(-1);
+            }
+            else
+            {
+                SetRestartInterval(RESTART_INTERVAL_HOURS);
+            }
+            GetRestartIntervalState();
+        }
+
+        private void tmrRestart_Tick(object sender, EventArgs e)
+        {
+            Restart();
         }
     }
 }

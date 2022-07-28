@@ -9,7 +9,7 @@
     <PackageReleaseNotes></PackageReleaseNotes>
     <AssemblyVersion></AssemblyVersion>
     <FileVersion></FileVersion>
-    <Version>$(VersionPrefix)0.0.6</Version>
+    <Version>$(VersionPrefix)0.0.7</Version>
   </PropertyGroup>
 
 </Project>

@@ -34,8 +34,12 @@
             this.SystemTrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.mnuSystemTrayIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.chkRunAtStartup = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnRestart = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnRestartNow = new System.Windows.Forms.ToolStripMenuItem();
+            this.chkRestartEvery5Mins = new System.Windows.Forms.ToolStripMenuItem();
+            this.chkRestartEveryHours = new System.Windows.Forms.ToolStripMenuItem();
             this.btnExit = new System.Windows.Forms.ToolStripMenuItem();
-            this.restartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tmrRestart = new System.Windows.Forms.Timer(this.components);
             this.mnuSystemTrayIcon.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -54,31 +58,60 @@
             // 
             this.mnuSystemTrayIcon.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.chkRunAtStartup,
-            this.restartToolStripMenuItem,
+            this.btnRestart,
             this.btnExit});
             this.mnuSystemTrayIcon.Name = "mnuSystemTrayIcon";
-            this.mnuSystemTrayIcon.Size = new System.Drawing.Size(181, 92);
+            this.mnuSystemTrayIcon.Size = new System.Drawing.Size(155, 70);
             // 
             // chkRunAtStartup
             // 
             this.chkRunAtStartup.Name = "chkRunAtStartup";
-            this.chkRunAtStartup.Size = new System.Drawing.Size(180, 22);
+            this.chkRunAtStartup.Size = new System.Drawing.Size(154, 22);
             this.chkRunAtStartup.Text = "Run at Startup";
             this.chkRunAtStartup.Click += new System.EventHandler(this.chkRunAtStartup_Click);
+            // 
+            // btnRestart
+            // 
+            this.btnRestart.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btnRestartNow,
+            this.chkRestartEvery5Mins,
+            this.chkRestartEveryHours});
+            this.btnRestart.Name = "btnRestart";
+            this.btnRestart.Size = new System.Drawing.Size(154, 22);
+            this.btnRestart.Text = "Restart";
+            this.btnRestart.Click += new System.EventHandler(this.btnRestart_Click);
+            // 
+            // btnRestartNow
+            // 
+            this.btnRestartNow.Name = "btnRestartNow";
+            this.btnRestartNow.Size = new System.Drawing.Size(180, 22);
+            this.btnRestartNow.Text = "Now";
+            this.btnRestartNow.Click += new System.EventHandler(this.btnRestartNow_Click);
+            // 
+            // chkRestartEvery5Mins
+            // 
+            this.chkRestartEvery5Mins.Name = "chkRestartEvery5Mins";
+            this.chkRestartEvery5Mins.Size = new System.Drawing.Size(180, 22);
+            this.chkRestartEvery5Mins.Text = "Every 5 mins";
+            this.chkRestartEvery5Mins.Click += new System.EventHandler(this.chkRestartEvery5Mins_Click);
+            // 
+            // chkRestartEveryHours
+            // 
+            this.chkRestartEveryHours.Name = "chkRestartEveryHours";
+            this.chkRestartEveryHours.Size = new System.Drawing.Size(180, 22);
+            this.chkRestartEveryHours.Text = "Every hours";
+            this.chkRestartEveryHours.Click += new System.EventHandler(this.chkRestartEveryHours_Click);
             // 
             // btnExit
             // 
             this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(180, 22);
+            this.btnExit.Size = new System.Drawing.Size(154, 22);
             this.btnExit.Text = "Exit";
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
-            // restartToolStripMenuItem
+            // tmrRestart
             // 
-            this.restartToolStripMenuItem.Name = "restartToolStripMenuItem";
-            this.restartToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.restartToolStripMenuItem.Text = "Restart";
-            this.restartToolStripMenuItem.Click += new System.EventHandler(this.restartToolStripMenuItem_Click);
+            this.tmrRestart.Tick += new System.EventHandler(this.tmrRestart_Tick);
             // 
             // Indicator
             // 
@@ -108,6 +141,10 @@
         private ContextMenuStrip mnuSystemTrayIcon;
         private ToolStripMenuItem chkRunAtStartup;
         private ToolStripMenuItem btnExit;
-        private ToolStripMenuItem restartToolStripMenuItem;
+        private ToolStripMenuItem btnRestart;
+        private ToolStripMenuItem btnRestartNow;
+        private ToolStripMenuItem chkRestartEvery5Mins;
+        private ToolStripMenuItem chkRestartEveryHours;
+        private System.Windows.Forms.Timer tmrRestart;
     }
 }
