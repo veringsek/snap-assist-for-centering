@@ -368,8 +368,9 @@ namespace SnapAssistForCentering
             }
         }
 
-        private static void Restart()
+        private void Restart()
         {
+            SystemTrayIcon.Visible = false;
             Application.Restart();
             Environment.Exit(0);
         }
