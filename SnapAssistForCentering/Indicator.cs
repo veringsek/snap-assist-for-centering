@@ -396,11 +396,18 @@ namespace SnapAssistForCentering
         {
             int? interval = GetRestartInterval();
             chkRestartEvery5Mins.Checked = false;
+            chkRestartEvery15Mins.Checked = false;
             chkRestartEveryHours.Checked = false;
             if (interval == RESTART_INTERVAL_5MINS)
             {
                 chkRestartEvery5Mins.Checked = true;
                 tmrRestart.Interval = RESTART_INTERVAL_5MINS;
+                tmrRestart.Start();
+            }
+            else if (interval == RESTART_INTERVAL_15MINS)
+            {
+                chkRestartEvery15Mins.Checked = true;
+                tmrRestart.Interval = RESTART_INTERVAL_15MINS;
                 tmrRestart.Start();
             }
             else if (interval == RESTART_INTERVAL_HOURS)
@@ -419,6 +426,7 @@ namespace SnapAssistForCentering
         }
 
         private const int RESTART_INTERVAL_5MINS = 5 * 60 * 1000;
+        private const int RESTART_INTERVAL_15MINS = 15 * 60 * 1000;
         private const int RESTART_INTERVAL_HOURS = 60 * 60 * 1000;
 
         private void chkRestartEvery5Mins_Click(object sender, EventArgs e)
@@ -430,6 +438,19 @@ namespace SnapAssistForCentering
             else
             {
                 SetRestartInterval(RESTART_INTERVAL_5MINS);
+            }
+            GetRestartIntervalState();
+        }
+
+        private void chkRestartEvery15Mins_Click(object sender, EventArgs e)
+        {
+            if (chkRestartEveryHours.Checked)
+            {
+                SetRestartInterval(-1);
+            }
+            else
+            {
+                SetRestartInterval(RESTART_INTERVAL_15MINS);
             }
             GetRestartIntervalState();
         }

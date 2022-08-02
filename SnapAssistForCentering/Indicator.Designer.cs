@@ -40,6 +40,7 @@
             this.chkRestartEveryHours = new System.Windows.Forms.ToolStripMenuItem();
             this.btnExit = new System.Windows.Forms.ToolStripMenuItem();
             this.tmrRestart = new System.Windows.Forms.Timer(this.components);
+            this.chkRestartEvery15Mins = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSystemTrayIcon.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -61,12 +62,12 @@
             this.btnRestart,
             this.btnExit});
             this.mnuSystemTrayIcon.Name = "mnuSystemTrayIcon";
-            this.mnuSystemTrayIcon.Size = new System.Drawing.Size(155, 70);
+            this.mnuSystemTrayIcon.Size = new System.Drawing.Size(181, 92);
             // 
             // chkRunAtStartup
             // 
             this.chkRunAtStartup.Name = "chkRunAtStartup";
-            this.chkRunAtStartup.Size = new System.Drawing.Size(154, 22);
+            this.chkRunAtStartup.Size = new System.Drawing.Size(180, 22);
             this.chkRunAtStartup.Text = "Run at Startup";
             this.chkRunAtStartup.Click += new System.EventHandler(this.chkRunAtStartup_Click);
             // 
@@ -75,9 +76,10 @@
             this.btnRestart.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnRestartNow,
             this.chkRestartEvery5Mins,
+            this.chkRestartEvery15Mins,
             this.chkRestartEveryHours});
             this.btnRestart.Name = "btnRestart";
-            this.btnRestart.Size = new System.Drawing.Size(154, 22);
+            this.btnRestart.Size = new System.Drawing.Size(180, 22);
             this.btnRestart.Text = "Restart";
             this.btnRestart.Click += new System.EventHandler(this.btnRestart_Click);
             // 
@@ -105,13 +107,20 @@
             // btnExit
             // 
             this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(154, 22);
+            this.btnExit.Size = new System.Drawing.Size(180, 22);
             this.btnExit.Text = "Exit";
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
             // tmrRestart
             // 
             this.tmrRestart.Tick += new System.EventHandler(this.tmrRestart_Tick);
+            // 
+            // chkRestartEvery15Mins
+            // 
+            this.chkRestartEvery15Mins.Name = "chkRestartEvery15Mins";
+            this.chkRestartEvery15Mins.Size = new System.Drawing.Size(180, 22);
+            this.chkRestartEvery15Mins.Text = "Every 15 mins";
+            this.chkRestartEvery15Mins.Click += new System.EventHandler(this.chkRestartEvery15Mins_Click);
             // 
             // Indicator
             // 
@@ -146,5 +155,6 @@
         private ToolStripMenuItem chkRestartEvery5Mins;
         private ToolStripMenuItem chkRestartEveryHours;
         private System.Windows.Forms.Timer tmrRestart;
+        private ToolStripMenuItem chkRestartEvery15Mins;
     }
 }
