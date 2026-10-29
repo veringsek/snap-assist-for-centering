@@ -285,22 +285,23 @@ namespace SnapAssistForCentering
                 public int SizeOfData;
                 public IntPtr Data;
             }
-            public static void Enable(IntPtr HWnd, bool hasFrame = true)
+            public static void Enable(IntPtr HWnd, byte alpha = 0x60, byte red = 0x30, byte green = 0x30, byte blue = 0x30, bool hasFrame = true)
             {
-                AccentPolicy accent = new AccentPolicy();
-                accent.AccentState = AccentState.ACCENT_BLUR_BEHIND;
-                if (hasFrame)
-                {
-                    accent.AccentFlags = 0x20 | 0x40 | 0x80 | 0x100;
-                }
-
+                AccentPolicy accent = new AccentPolicy
+                { 
+                    AccentState = AccentState.ACCENT_ACRYLIC_BLUR_BEHIND,
+                    AccentFlags = (uint)(hasFrame ? 0x20 | 0x40 | 0x80 | 0x100 : 0x0),
+                    GradientColor = ((uint)alpha << 24) | ((uint)blue << 16) | ((uint)green << 8) | red
+                };
                 int accentStructSize = Marshal.SizeOf(accent);
                 IntPtr accentPtr = Marshal.AllocHGlobal(accentStructSize);
                 Marshal.StructureToPtr(accent, accentPtr, false);
-                WindowCompositionAttributeData data = new WindowCompositionAttributeData();
-                data.Attribute = WindowCompositionAttribute.WCA_ACCENT_POLICY;
-                data.SizeOfData = accentStructSize;
-                data.Data = accentPtr;
+                WindowCompositionAttributeData data = new WindowCompositionAttributeData
+                {
+                    Attribute = WindowCompositionAttribute.WCA_ACCENT_POLICY,
+                    SizeOfData = accentStructSize,
+                    Data = accentPtr
+                };
                 SetWindowCompositionAttribute(HWnd, ref data);
                 Marshal.FreeHGlobal(accentPtr);
             }
