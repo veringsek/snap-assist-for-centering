@@ -21,6 +21,7 @@ namespace SnapAssistForCentering
 
         private void Indicator_Load(object sender, EventArgs e)
         {
+            RoundedCorners.Enable(Handle);
             Acrylic.Enable(Handle);
         }
 
@@ -471,6 +472,21 @@ namespace SnapAssistForCentering
         private void tmrRestart_Tick(object sender, EventArgs e)
         {
             Restart();
+        }
+
+        public static class RoundedCorners
+        {
+            public const int DWMWA_WINDOW_CORNER_PREFERENCE = 33;
+            public const int DWMWCP_ROUND = 2;
+
+            [DllImport("dwmapi.dll", PreserveSig = true)]
+            private static extern int DwmSetWindowAttribute(IntPtr hwnd, int dwAttribute, ref int pvAttribute, int cbAttribute);
+
+            public static void Enable(IntPtr hwnd)
+            {
+                int preference = DWMWCP_ROUND;
+                DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, ref preference, sizeof(int));
+            }
         }
     }
 }
