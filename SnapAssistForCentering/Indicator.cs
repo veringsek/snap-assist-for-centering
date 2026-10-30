@@ -73,24 +73,6 @@ namespace SnapAssistForCentering
             return null;
         }
 
-        private static Rectangle Centering(Rectangle area, Size size)
-        {
-            return new Rectangle(
-                area.X + area.Width / 2 - size.Width / 2,
-                area.Y + area.Height / 2 - size.Height / 2,
-                size.Width, size.Height);
-        }
-
-        private static Point LeftTop(Rectangle rectangle)
-        {
-            return new Point(rectangle.Left, rectangle.Top);
-        }
-
-        private static Size RectangleSize(Rectangle rectangle)
-        {
-            return new Size(rectangle.Width, rectangle.Height);
-        }
-
         readonly WinEventDelegate procDelegate;
         private IntPtr hwndDragging;
 
@@ -146,12 +128,12 @@ namespace SnapAssistForCentering
                 Screen? screen = CursorScreen();
                 if (screen == null) return;
 
-                Rectangle sensor = Centering(screen.WorkingArea, SensorSize());
+                Rectangle sensor = SizeController.Centering(screen.WorkingArea, SensorSize());
 
                 if (status == Status.ACTIVATED && sensor.Contains(Cursor.Position))
                 {
                     Rectangle rect = GetWindowRectangle(hwndDragging);
-                    Rectangle destination = Centering(screen.WorkingArea, RectangleSize(rect));
+                    Rectangle destination = SizeController.Centering(screen.WorkingArea, SizeController.RectangleSize(rect));
                     SetWindowPosition(hwndDragging, destination, SW_SHOW);
                 }
 
@@ -160,50 +142,50 @@ namespace SnapAssistForCentering
             }
         }
 
-        class SizeController
-        {
-            public Form form;
-            public System.Windows.Forms.Timer timer;
+        //class SizeController
+        //{
+        //    public Form form;
+        //    public System.Windows.Forms.Timer timer;
 
-            private Rectangle area;
-            private Size target;
-            private Size delta;
-            private int countdown;
+        //    private Rectangle area;
+        //    private Size target;
+        //    private Size delta;
+        //    private int countdown;
 
-            public SizeController(Form form)
-            {
-                this.form = form;
-                timer = new System.Windows.Forms.Timer();
-                timer.Tick += new System.EventHandler(Animate);
-                timer.Interval = 10;
-                target = form.Size;
-                delta = new Size();
-                area = new Rectangle();
-            }
+        //    public SizeController(Form form)
+        //    {
+        //        this.form = form;
+        //        timer = new System.Windows.Forms.Timer();
+        //        timer.Tick += new System.EventHandler(Animate);
+        //        timer.Interval = 10;
+        //        target = form.Size;
+        //        delta = new Size();
+        //        area = new Rectangle();
+        //    }
 
-            public void To(Rectangle area, Size size, int milliseconds)
-            {
-                this.area = area;
-                delta = (size - form.Size) * timer.Interval / milliseconds;
-                target = size;
-                countdown = milliseconds;
-                timer.Start();
-            }
+        //    public void To(Rectangle area, Size size, int milliseconds)
+        //    {
+        //        this.area = area;
+        //        delta = (size - form.Size) * timer.Interval / milliseconds;
+        //        target = size;
+        //        countdown = milliseconds;
+        //        timer.Start();
+        //    }
 
-            private void Animate(object? sender, EventArgs e)
-            {
-                Console.WriteLine(delta);
-                form.Size += delta;
-                form.Location = LeftTop(Centering(area, form.Size));
-                countdown -= 1;
-                if (countdown <= 0)
-                {
-                    form.Size = target;
-                    countdown = 0;
-                    timer.Stop();
-                }
-            }
-        }
+        //    private void Animate(object? sender, EventArgs e)
+        //    {
+        //        Console.WriteLine(delta);
+        //        form.Size += delta;
+        //        form.Location = LeftTop(Centering(area, form.Size));
+        //        countdown -= 1;
+        //        if (countdown <= 0)
+        //        {
+        //            form.Size = target;
+        //            countdown = 0;
+        //            timer.Stop();
+        //        }
+        //    }
+        //}
 
         delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
@@ -232,7 +214,8 @@ namespace SnapAssistForCentering
         {
             if (hwndInsertAfter == null)
             {
-                hwndInsertAfter = IntPtr.Zero;
+                //hwndInsertAfter = IntPtr.Zero;
+                hwndInsertAfter = new IntPtr(-1); // HWND_TOPMOST
             }
             return SetWindowPos(hwnd, (IntPtr)hwndInsertAfter, location.X, location.Y, location.Width, location.Height, flags);
         }
@@ -327,7 +310,7 @@ namespace SnapAssistForCentering
             if (screen == null) return;
 
             Rectangle rect = GetWindowRectangle(hwndDragging);
-            Rectangle sensor = Centering(screen.WorkingArea, SensorSize());
+            Rectangle sensor = SizeController.Centering(screen.WorkingArea, SensorSize());
 
             if (status == Status.NON_ACTIVATED && !sensor.Contains(Cursor.Position))
             {
