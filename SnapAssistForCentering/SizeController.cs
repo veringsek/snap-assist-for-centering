@@ -38,7 +38,6 @@ namespace SnapAssistForCentering
 
         private void Animate(object? sender, EventArgs e)
         {
-            Console.WriteLine(delta);
             form.Size += delta;
             form.Location = LeftTop(Centering(area, form.Size));
             countdown -= 1;
