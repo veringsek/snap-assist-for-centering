@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SnapAssistForCentering
 {
-    class SizeController
+    internal class SizeController
     {
         public Form form;
         public System.Windows.Forms.Timer timer;

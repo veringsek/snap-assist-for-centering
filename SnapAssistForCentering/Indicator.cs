@@ -142,51 +142,6 @@ namespace SnapAssistForCentering
             }
         }
 
-        //class SizeController
-        //{
-        //    public Form form;
-        //    public System.Windows.Forms.Timer timer;
-
-        //    private Rectangle area;
-        //    private Size target;
-        //    private Size delta;
-        //    private int countdown;
-
-        //    public SizeController(Form form)
-        //    {
-        //        this.form = form;
-        //        timer = new System.Windows.Forms.Timer();
-        //        timer.Tick += new System.EventHandler(Animate);
-        //        timer.Interval = 10;
-        //        target = form.Size;
-        //        delta = new Size();
-        //        area = new Rectangle();
-        //    }
-
-        //    public void To(Rectangle area, Size size, int milliseconds)
-        //    {
-        //        this.area = area;
-        //        delta = (size - form.Size) * timer.Interval / milliseconds;
-        //        target = size;
-        //        countdown = milliseconds;
-        //        timer.Start();
-        //    }
-
-        //    private void Animate(object? sender, EventArgs e)
-        //    {
-        //        Console.WriteLine(delta);
-        //        form.Size += delta;
-        //        form.Location = LeftTop(Centering(area, form.Size));
-        //        countdown -= 1;
-        //        if (countdown <= 0)
-        //        {
-        //            form.Size = target;
-        //            countdown = 0;
-        //            timer.Stop();
-        //        }
-        //    }
-        //}
-
         delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
         [DllImport("user32.dll")]
@@ -226,68 +181,6 @@ namespace SnapAssistForCentering
                 hwndInsertAfter = IntPtr.Zero;
             }
             return SetWindowPos(hwnd, (IntPtr)hwndInsertAfter, location.X, location.Y, size.Width, size.Height, flags);
-        }
-
-        public static class Acrylic
-        {
-
-            public const int WS_SYSMENU = 0x80000;
-            public const int WS_EX_LAYERED = 0x00080000;
-
-            [DllImport("user32.dll")]
-            internal static extern IntPtr SetWindowCompositionAttribute(IntPtr hwnd, ref WindowCompositionAttributeData data);
-
-            internal enum AccentState
-            {
-                ACCENT_DISABLED = 0,
-                ACCENT_GRADIENT = 1,
-                ACCENT_TRANSPARENT_GRADIENT = 2,
-                ACCENT_BLUR_BEHIND = 3,
-                ACCENT_ACRYLIC_BLUR_BEHIND = 4,
-                ACCENT_INVALID_STATE = 5
-            }
-
-            [StructLayout(LayoutKind.Sequential)]
-            internal struct AccentPolicy
-            {
-                public AccentState AccentState;
-                public uint AccentFlags;
-                public uint GradientColor;
-                public uint AnimationId;
-            }
-
-            internal enum WindowCompositionAttribute
-            {
-                WCA_ACCENT_POLICY = 19
-            }
-
-            [StructLayout(LayoutKind.Sequential)]
-            internal struct WindowCompositionAttributeData
-            {
-                public WindowCompositionAttribute Attribute;
-                public int SizeOfData;
-                public IntPtr Data;
-            }
-            public static void Enable(IntPtr HWnd, byte alpha = 0x60, byte red = 0x30, byte green = 0x30, byte blue = 0x30, bool hasFrame = true)
-            {
-                AccentPolicy accent = new AccentPolicy
-                { 
-                    AccentState = AccentState.ACCENT_ACRYLIC_BLUR_BEHIND,
-                    AccentFlags = (uint)(hasFrame ? 0x20 | 0x40 | 0x80 | 0x100 : 0x0),
-                    GradientColor = ((uint)alpha << 24) | ((uint)blue << 16) | ((uint)green << 8) | red
-                };
-                int accentStructSize = Marshal.SizeOf(accent);
-                IntPtr accentPtr = Marshal.AllocHGlobal(accentStructSize);
-                Marshal.StructureToPtr(accent, accentPtr, false);
-                WindowCompositionAttributeData data = new WindowCompositionAttributeData
-                {
-                    Attribute = WindowCompositionAttribute.WCA_ACCENT_POLICY,
-                    SizeOfData = accentStructSize,
-                    Data = accentPtr
-                };
-                SetWindowCompositionAttribute(HWnd, ref data);
-                Marshal.FreeHGlobal(accentPtr);
-            }
         }
 
         protected override CreateParams CreateParams
