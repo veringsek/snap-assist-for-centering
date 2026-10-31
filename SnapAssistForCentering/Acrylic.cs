@@ -11,6 +11,7 @@ namespace SnapAssistForCentering
     {
         public const int WS_SYSMENU = 0x80000;
         public const int WS_EX_LAYERED = 0x00080000;
+        public const int WS_EX_TOPMOST = 0x00000008;
 
         [DllImport("user32.dll")]
         internal static extern IntPtr SetWindowCompositionAttribute(IntPtr hwnd, ref WindowCompositionAttributeData data);

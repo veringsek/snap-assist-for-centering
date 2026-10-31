@@ -190,7 +190,7 @@ namespace SnapAssistForCentering
                 CreateParams cParms = base.CreateParams;
                 cParms.Style |= Acrylic.WS_SYSMENU;
                 cParms.ExStyle |= Acrylic.WS_EX_LAYERED;
-                cParms.ExStyle |= 0x00000008; // WS_EX_TOPMOST = 0x00000008
+                cParms.ExStyle |= Acrylic.WS_EX_TOPMOST;
                 return cParms;
             }
         }
