@@ -10,7 +10,7 @@ A supplement to Windows Snap Assist which helps centering a window if the cursor
 
 Drag and drop a window onto the indicator window at the center of the screens to center that window.
 
-<img src="imgs/screenshot-drag.gif" />
+https://github.com/user-attachments/assets/dd436bb8-5698-47ec-8fd6-73a9422e85bb
 
 You can exit the program or set to run at startup with the system tray icon.
 
@@ -21,6 +21,8 @@ If for some reason the indicator window is not at topmost, restart the program w
 ## Dev
 
 Due to the limitation of C++, this program has been remade in C#.
+
+This program has been upgraded to .NET 10 and updated with rounded corners and better acrylic background to match Windows 11 design language.
 
 ## License
 
