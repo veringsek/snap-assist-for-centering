@@ -28,7 +28,7 @@ namespace SnapAssistForCentering
         private void Indicator_Shown(object? sender, EventArgs e)
         {
             Shown -= Indicator_Shown;
-            controller.To(Screen.PrimaryScreen.WorkingArea, SensorSize(), SIZE_ANIMATION_TIME);
+            controller.To((Screen.PrimaryScreen ?? Screen.AllScreens[0]).WorkingArea, SensorSize(), SIZE_ANIMATION_TIME);
             Hide();
         }
 
@@ -236,7 +236,7 @@ namespace SnapAssistForCentering
             if (key == null) return;
             if (chkRunAtStartup.Checked)
             {
-                key.DeleteValue(Application.ProductName, false);
+                key.DeleteValue(Application.ProductName!, false);
                 chkRunAtStartup.Checked = false;
             }
             else
